@@ -1,0 +1,146 @@
+CREATE TABLE Aluno (
+    ID NUMBER PRIMARY KEY,
+    Nome VARCHAR2(50),
+    Sobrenome VARCHAR2(50),
+    Email VARCHAR2(100),
+    Curso_ID NUMBER,
+    DataNascimento DATE
+);
+
+INSERT INTO Aluno (ID, Nome, Sobrenome, Email, Curso_ID, DataNascimento)
+VALUES (1, 'João', 'Silva', 'joao.silva@dominio.com', 1, TO_DATE('1995-03-15', 'YYYY-MM-DD'));
+
+INSERT INTO Aluno (ID, Nome, Sobrenome, Email, Curso_ID, DataNascimento)
+VALUES (2, 'Maria', 'Santos', 'maria.santos@dominio.com', 2, TO_DATE('1998-08-20', 'YYYY-MM-DD'));
+
+INSERT INTO Aluno (ID, Nome, Sobrenome, Email, Curso_ID, DataNascimento)
+VALUES (3, 'Pedro', 'Ferreira', 'pedro.ferreira@dominio.com', 1, TO_DATE('1997-04-10', 'YYYY-MM-DD'));
+
+INSERT INTO Aluno (ID, Nome, Sobrenome, Email, Curso_ID, DataNascimento)
+VALUES (4, 'Ana', 'Gomes', 'ana.gomes@dominio.com', 3, TO_DATE('1996-11-25', 'YYYY-MM-DD'));
+
+INSERT INTO Aluno (ID, Nome, Sobrenome, Email, Curso_ID, DataNascimento)
+VALUES (5, 'Carlos', 'Rocha', 'carlos.rocha@dominio.com', 2, TO_DATE('1999-06-05', 'YYYY-MM-DD'));
+
+INSERT INTO Aluno (ID, Nome, Sobrenome, Email, Curso_ID, DataNascimento)
+VALUES (6, 'Juliana', 'Mendes', 'juliana.mendes@dominio.com', 3, TO_DATE('1994-09-12', 'YYYY-MM-DD'));
+
+INSERT INTO Aluno (ID, Nome, Sobrenome, Email, Curso_ID, DataNascimento)
+VALUES (7, 'Lucas', 'Oliveira', 'lucas.oliveira@dominio.com', 1, TO_DATE('1998-01-30', 'YYYY-MM-DD'));
+
+INSERT INTO Aluno (ID, Nome, Sobrenome, Email, Curso_ID, DataNascimento)
+VALUES (8, 'Mariana', 'Pereira', 'mariana.pereira@dominio.com', 2, TO_DATE('1997-07-08', 'YYYY-MM-DD'));
+
+COMMIT;
+
+
+
+CREATE TABLE Curso (
+    ID NUMBER PRIMARY KEY,
+    NomeCurso VARCHAR2(100),
+    Departamento VARCHAR2(50),
+    Descricao CLOB
+);
+
+INSERT INTO Curso (ID, NomeCurso, Departamento, Descricao)
+VALUES (1, 'Engenharia de Software', 'Ciência da Computação', 'Curso de graduação em Engenharia de Software.');
+
+INSERT INTO Curso (ID, NomeCurso, Departamento, Descricao)
+VALUES (2, 'Administração de Empresas', 'Administração', 'Curso de graduação em Administração de Empresas.');
+
+INSERT INTO Curso (ID, NomeCurso, Departamento, Descricao)
+VALUES (3, 'Medicina', 'Medicina', 'Curso de graduação em Medicina.');
+
+INSERT INTO Curso (ID, NomeCurso, Departamento, Descricao)
+VALUES (4, 'Psicologia', 'Psicologia', 'Curso de graduação em Psicologia.');
+
+INSERT INTO Curso (ID, NomeCurso, Departamento, Descricao)
+VALUES (5, 'Biologia', 'Biologia', 'Curso de graduação em Biologia.');
+
+INSERT INTO Curso (ID, NomeCurso, Departamento, Descricao)
+VALUES (6, 'Engenharia Elétrica', 'Engenharia Elétrica', 'Curso de graduação em Engenharia Elétrica.');
+
+INSERT INTO Curso (ID, NomeCurso, Departamento, Descricao)
+VALUES (7, 'História', 'História', 'Curso de graduação em História.');
+
+INSERT INTO Curso (ID, NomeCurso, Departamento, Descricao)
+VALUES (8, 'Economia', 'Economia', 'Curso de graduação em Economia.');
+commit;
+
+
+CREATE TABLE Professor (
+    ID NUMBER PRIMARY KEY,
+    Nome VARCHAR2(50),
+    Sobrenome VARCHAR2(50),
+    Email VARCHAR2(100),
+    Departamento VARCHAR2(50),
+    Titulo VARCHAR2(50)
+);
+
+INSERT INTO Professor (ID, Nome, Sobrenome, Email, Departamento, Titulo)
+VALUES (1, 'João', 'Silva', 'joao.silva@email.com', 'Ciência da Computação', 'Professor Assistente');
+
+INSERT INTO Professor (ID, Nome, Sobrenome, Email, Departamento, Titulo)
+VALUES (2, 'Maria', 'Santos', 'maria.santos@email.com', 'Administração', 'Professor Adjunto');
+
+INSERT INTO Professor (ID, Nome, Sobrenome, Email, Departamento, Titulo)
+VALUES (3, 'Pedro', 'Ferreira', 'pedro.ferreira@email.com', 'Medicina', 'Professor Titular');
+
+INSERT INTO Professor (ID, Nome, Sobrenome, Email, Departamento, Titulo)
+VALUES (4, 'Ana', 'Ribeiro', 'ana.ribeiro@email.com', 'Psicologia', 'Professor Assistente');
+
+INSERT INTO Professor (ID, Nome, Sobrenome, Email, Departamento, Titulo)
+VALUES (5, 'Luís', 'Almeida', 'luis.almeida@email.com', 'Biologia', 'Professor Adjunto');
+
+INSERT INTO Professor (ID, Nome, Sobrenome, Email, Departamento, Titulo)
+VALUES (6, 'Carla', 'Pereira', 'carla.pereira@email.com', 'Engenharia Elétrica', 'Professor Titular');
+
+INSERT INTO Professor (ID, Nome, Sobrenome, Email, Departamento, Titulo)
+VALUES (7, 'Rui', 'Gomes', 'rui.gomes@email.com', 'História', 'Professor Assistente');
+
+INSERT INTO Professor (ID, Nome, Sobrenome, Email, Departamento, Titulo)
+VALUES (8, 'Marta', 'Lopes', 'marta.lopes@email.com', 'Economia', 'Professor Adjunto');
+
+Commit;
+
+
+-- Cria a tabela de relação entre Professores e Alunos (Muitos para Muitos)
+CREATE TABLE Professor_Aluno (
+    Professor_ID NUMBER,
+    Aluno_ID NUMBER
+);
+
+
+-- Trigger para gerar emails únicos
+CREATE OR REPLACE TRIGGER GerarEmailUnico
+BEFORE INSERT ON Aluno
+FOR EACH ROW
+BEGIN
+    DECLARE
+        baseEmail VARCHAR2(100);
+        cnt NUMBER;
+    BEGIN
+        baseEmail := :NEW.Nome || '.' || :NEW.Sobrenome || '@dominio.com';
+        SELECT COUNT(*) INTO cnt FROM Aluno WHERE Email = baseEmail;
+        IF cnt > 0 THEN
+            :NEW.Email := baseEmail || cnt;
+        ELSE
+            :NEW.Email := baseEmail;
+        END IF;
+    END;
+END;
+/
+
+-- Stored Procedure para inserir um curso
+CREATE OR REPLACE PROCEDURE InserirCurso(
+    p_ID NUMBER,
+    p_NomeCurso VARCHAR2,
+    p_Departamento VARCHAR2,
+    p_Descricao CLOB
+) AS
+BEGIN
+    INSERT INTO Curso (ID, NomeCurso, Departamento, Descricao)
+    VALUES (p_ID, p_NomeCurso, p_Departamento, p_Descricao);
+    COMMIT;
+END InserirCurso;
+/
